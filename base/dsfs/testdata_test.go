@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"sync"
 
 	"github.com/qri-io/dataset"
 	"github.com/qri-io/qfs"
@@ -174,7 +175,7 @@ func makeFilestore() (map[string]string, cafs.Filestore, error) {
 
 		ds.SetBodyFile(qfs.NewMemfileBytes(filepath.Base(dataPath), data))
 
-		dskey, err := WriteDataset(ctx, st, ds, true)
+		dskey, err := WriteDataset(ctx, &sync.Mutex{}, st, ds, true)
 		if err != nil {
 			return datasets, nil, fmt.Errorf("dataset: %s write error: %s", k, err.Error())
 		}
